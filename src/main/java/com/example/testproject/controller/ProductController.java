@@ -2,12 +2,16 @@ package com.example.testproject.controller;
 
 import com.example.testproject.data.dto.ProductDto;
 import com.example.testproject.service.ProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/product-api")
 public class ProductController {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 
     private ProductService productService;
 
@@ -18,8 +22,17 @@ public class ProductController {
 
     @GetMapping(value = "/product/{productId}")
     public ProductDto getProduct(@PathVariable String productId) {
-        return productService.getProduct(productId);
+        long startTime = System.currentTimeMillis();
+        LOGGER.info("[ProductController] perform {} of dbswlsghkd API.", "getProduct");
+
+        ProductDto productDto = productService.getProduct(productId);
+
+        LOGGER.info("[ProductController] Response :: productID = {}, productName = {}, productPrice = {}, productStock = {}, Response Time = {}ms",productDto.getProductId(), productDto.getProductName(), productDto.getProductPrice(), productDto.getProductStock(), (System.currentTimeMillis() - startTime));
+
+//        return productService.getProduct(productId);
+        return productDto;
     }
+
 
     @PostMapping(value = "/product")
     public ProductDto createProduct(@RequestBody ProductDto productDto) {
